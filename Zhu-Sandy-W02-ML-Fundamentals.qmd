@@ -1,0 +1,833 @@
+---
+title: "W02: Reflection on Fundamentals of Machine Learning"
+subtitle: "Introduction to Machine Learning and Tidymodels"
+author: "Sandy Zhu"
+date: today
+
+format:
+  html:
+    toc: true
+    toc-depth: 4
+    toc-expand: 1
+    toc-location: right-body
+    toc-title: "Contents"
+    number-sections: true
+    code-fold: show
+    code-summary: "Show code"
+    code-tools: true
+    code-overflow: wrap
+    theme: cosmo
+    highlight-style: github
+    df-print: paged
+    embed-resources: true
+
+execute:
+  warning: false
+  message: false
+  freeze: true
+---
+
+# Introduction
+
+This report reflects on the fundamental concepts of **machine learning** and the **tidymodels framework in R**.
+
+The module helped me understand that machine learning is not only about selecting an algorithm. A complete machine learning project also involves preparing data, selecting appropriate features, fitting models, evaluating model performance, avoiding data leakage, and eventually deploying and monitoring a model.
+
+::: {.callout-note title="Main Learning Objective"}
+My main goal in this module is to understand the basic machine learning workflow and how R and tidymodels can provide a structured approach for developing reliable predictive models.
+:::
+
+
+# Step 1: Good Practices for Applied Machine Learning
+
+## Prompt
+
+> In Step 1, the textbook authors made a case for a new approach in machine learning with the tidymodels package. Summarize the video presentation.
+
+## Response
+
+The presentation by Julia Silge and Max Kuhn introduced **tidymodels** as a framework for applied machine learning in R. One of the main ideas I learned from the presentation is that tidymodels provides a consistent and unified approach for the modeling process, from preparing data and building models to evaluating and eventually deploying them.
+
+The presentation organized good machine learning practices around several important ideas: **ergonomics, effectiveness, safety, and deployment**.
+
+**Ergonomics** means designing the modeling process so that it is easier for analysts to understand and use. For example, tidymodels provides tools such as `recipes` for preprocessing and `workflows` for connecting preprocessing steps with models.
+
+**Effectiveness** focuses on providing tools that help analysts develop and tune models efficiently. The presentation discussed methods for efficient hyperparameter tuning and extension packages that support specialized modeling problems.
+
+Another important idea was **safety**. Machine learning results can be misleading if the analyst accidentally introduces data leakage or evaluates a model using inappropriate data. Tidymodels encourages appropriate validation and resampling practices to reduce these problems.
+
+Finally, the presentation discussed **model deployment**. The `vetiver` framework was introduced as a way to help analysts version, deploy, and monitor machine learning models after development.
+
+> My main takeaway is that good machine learning is not only about choosing the most powerful algorithm. A good modeling workflow should also be organized, reproducible, safe, and suitable for real-world use.
+
+
+## What did you learn about tidymodels?
+
+### Prompt
+
+> What did you learn about tidymodels? How is it different from others, such as caret? What are the strengths and weaknesses of tidymodels?
+
+### Response
+
+I learned that **tidymodels is not one machine learning model or algorithm**. Instead, it is an ecosystem of R packages designed to support different stages of the machine learning process.
+
+For example:
+
+| Package | Purpose |
+|---|---|
+| `rsample` | Data splitting and resampling |
+| `recipes` | Data preprocessing and feature engineering |
+| `parsnip` | Consistent model specification |
+| `workflows` | Combine preprocessing and models |
+| `tune` | Hyperparameter tuning |
+| `yardstick` | Model performance evaluation |
+| `broom` | Convert model results into tidy formats |
+
+Compared with older frameworks such as `caret`, one advantage of tidymodels is that its syntax follows the tidyverse style. Different modeling steps use a more consistent structure.
+
+Some strengths of tidymodels are:
+
+- consistent syntax;
+- integration with the tidyverse;
+- organized preprocessing through recipes;
+- support for resampling and tuning;
+- reusable workflows;
+- multiple evaluation metrics;
+- protection against common modeling mistakes when the workflow is used correctly.
+
+One weakness is that there are many packages and concepts to learn. For a beginner, it can sometimes be difficult to remember which package performs each part of the machine learning workflow.
+
+However, I think the consistent structure becomes an advantage as the machine learning project becomes more complicated.
+
+
+## Tidymodels Workflow
+
+### Prompt
+
+> What does the workflow look like when you use tidymodels for machine learning?
+
+### Response
+
+Based on what I learned in this module, a typical machine learning workflow using tidymodels can be summarized as:
+
+1. Import and explore the data.
+2. Identify the outcome and predictor variables.
+3. Split the data into training and testing sets.
+4. Create a recipe for preprocessing.
+5. Specify the machine learning model.
+6. Combine the recipe and model into a workflow.
+7. Use resampling or cross-validation when appropriate.
+8. Fit or tune the model.
+9. Evaluate model performance.
+10. Finalize the model.
+11. Evaluate the final model using held-out test data.
+12. Deploy and monitor the model when appropriate.
+
+::: {.callout-tip title="Important"}
+The test set should remain separate during model development. Using test information during training can create **data leakage** and make model performance appear better than it really is.
+:::
+
+
+## MLOps and Vetiver
+
+### Prompt
+
+> What is MLOps in the machine learning workflow? How does the vetiver package support MLOps?
+
+### Response
+
+**MLOps** refers to the practices used to move machine learning models from development into production and maintain them after deployment.
+
+Training a model is not necessarily the end of a machine learning project. An organization may also need to save different model versions, deploy a model so that other systems can use it, monitor its performance, and update the model when necessary.
+
+The presentation introduced **vetiver** as a framework that supports this stage of the machine learning lifecycle. Vetiver can help with model versioning, deployment, and monitoring.
+
+For example, a marketing company may develop a model that predicts whether a customer will respond to a campaign. After building the model, the company needs a reliable way to make predictions for future customers and monitor whether the model continues to perform well as customer behavior changes.
+
+::: {.callout-important title="Key Learning"}
+Machine learning does not end when the model is fitted. A complete applied machine learning workflow also considers **reproducibility, validation, deployment, and monitoring**.
+:::
+
+
+# Step 2: Fundamental Machine Learning Concepts
+
+# Video 1: A Gentle Introduction to Machine Learning
+
+## Prompt
+
+> Summarize the main ideas you learned from the video about the fundamental concepts of machine learning.
+
+## Response
+
+Machine learning uses data to identify patterns that can be used to make predictions or classifications.
+
+One important distinction is between **supervised learning** and **unsupervised learning**.
+
+In supervised learning, the dataset contains a known outcome variable. The objective is to learn the relationship between predictor variables and that outcome.
+
+Examples include:
+
+- predicting customer spending;
+- predicting whether a customer will respond to a campaign;
+- predicting whether a customer will churn.
+
+Supervised learning can be divided into two major categories:
+
+1. **Regression**, when the outcome is continuous.
+2. **Classification**, when the outcome represents categories.
+
+In unsupervised learning, there is no known outcome variable. Instead, the algorithm attempts to identify patterns or structures in the data. Customer segmentation using clustering is an example.
+
+I learned that the appropriate machine learning method depends first on the type of business question and the type of outcome being predicted.
+
+
+# Video 2: Cross Validation
+
+## Prompt
+
+> Summarize what you learned about cross-validation and explain why it is important in machine learning.
+
+## Response
+
+Cross-validation is a method for estimating how well a machine learning model is likely to perform on new data.
+
+If a model is evaluated only on the same observations used for training, the performance may appear unrealistically good. This is because the model has already seen those observations.
+
+In **k-fold cross-validation**, the training data are divided into several folds. For example, in 10-fold cross-validation, the data are divided into ten groups.
+
+The general process is:
+
+1. Use nine folds to train the model.
+2. Use the remaining fold to evaluate it.
+3. Repeat the process so every fold serves as the validation set.
+4. Combine the performance results.
+
+Cross-validation gives a more reliable estimate of model performance than evaluating the model only on the training data.
+
+> Cross-validation helps answer an important question: **Will this model perform well on customers it has never seen before?**
+
+
+# Video 3: Confusion Matrix
+
+## Prompt
+
+> Summarize what you learned about the confusion matrix.
+
+## Response
+
+A **confusion matrix** is used to evaluate classification models by comparing predicted classes with actual classes.
+
+For binary classification, there are four possible outcomes:
+
+| Result | Meaning |
+|---|---|
+| True Positive | Predicted positive and actually positive |
+| True Negative | Predicted negative and actually negative |
+| False Positive | Predicted positive but actually negative |
+| False Negative | Predicted negative but actually positive |
+
+The confusion matrix is important because accuracy alone may not explain what kinds of mistakes a model is making.
+
+For example, in a marketing response model, a false positive could mean spending money contacting someone who does not respond. A false negative could mean failing to contact a customer who would have responded.
+
+Therefore, understanding the business cost of each type of error is important when evaluating a classification model.
+
+
+# Video 4: Sensitivity and Specificity
+
+## Prompt
+
+> Summarize what you learned about sensitivity and specificity.
+
+## Response
+
+**Sensitivity** measures how well a model identifies actual positive observations.
+
+The formula is:
+
+$$
+Sensitivity =
+\frac{TP}{TP + FN}
+$$
+
+A model with high sensitivity identifies a large proportion of the actual positive cases.
+
+For example, in a marketing campaign, sensitivity can answer:
+
+> Of all customers who actually responded, what percentage did the model correctly identify?
+
+**Specificity** measures how well the model identifies actual negative observations.
+
+$$
+Specificity =
+\frac{TN}{TN + FP}
+$$
+
+For a marketing campaign, specificity answers:
+
+> Of all customers who would not respond, what percentage did the model correctly identify?
+
+The relative importance of sensitivity and specificity depends on the business problem and the cost of different errors.
+
+
+# Video 5: Bias and Variance
+
+## Prompt
+
+> Summarize what you learned about bias and variance.
+
+## Response
+
+Bias and variance help explain why a machine learning model may perform poorly on new data.
+
+**High bias** occurs when a model is too simple to capture the important patterns in the data. This is associated with **underfitting**.
+
+**High variance** occurs when a model fits the training data too closely and becomes sensitive to small changes in the data. This is associated with **overfitting**.
+
+A good machine learning model should balance bias and variance.
+
+| Situation | Description |
+|---|---|
+| High Bias | Model is too simple |
+| High Variance | Model is too sensitive to training data |
+| Good Balance | Model captures patterns that generalize |
+
+This concept helped me understand why the most complicated model is not automatically the best model. The objective is to perform well on **new data**, not simply to fit the training data perfectly.
+
+::: {.callout-note title="My Understanding"}
+Machine learning is fundamentally about generalization. A useful model should learn meaningful patterns from training data without simply memorizing those observations.
+:::
+
+
+# Step 3: Hands-On Practice
+
+# Practice 3.1: Base R Modeling with `mtcars`
+
+## Prompt
+
+> Use the `mtcars` dataset to practice fitting and evaluating a linear regression model. Start with a model predicting `mpg` from `wt`. Use `tidy()`, `glance()`, and `augment()` to examine the model. Create a residual plot. Then add `hp` and `cyl` and compare the model performance.
+
+## Load Packages
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+
+tidymodels_prefer()
+```
+
+
+## Examine the Data
+
+```{r}
+glimpse(mtcars)
+```
+
+```{r}
+summary(mtcars)
+```
+
+
+## Model 1: Predict MPG Using Weight
+
+```{r}
+model_1 <- lm(
+  mpg ~ wt,
+  data = mtcars
+)
+
+model_1
+```
+
+
+## Examine Coefficients with `tidy()`
+
+```{r}
+tidy(model_1)
+```
+
+### Response
+
+The `tidy()` function organizes the model coefficients into a clean table.
+
+The estimate for `wt` represents the expected change in miles per gallon associated with a one-unit increase in vehicle weight, holding other variables constant.
+
+Because the coefficient for `wt` is negative, heavier vehicles are associated with lower fuel efficiency in this model.
+
+
+## Examine Model Performance with `glance()`
+
+```{r}
+glance(model_1)
+```
+
+### Response
+
+The `glance()` function provides model-level statistics such as **R-squared**, adjusted R-squared, residual standard error, and other measures.
+
+The R-squared value tells us how much of the variation in `mpg` is explained by vehicle weight in this model.
+
+
+## Examine Individual Predictions with `augment()`
+
+```{r}
+model_1_aug <- augment(model_1)
+
+model_1_aug |>
+  select(
+    mpg,
+    wt,
+    .fitted,
+    .resid
+  ) |>
+  head(10)
+```
+
+### Response
+
+The `augment()` function adds model information back to the observation-level data.
+
+Two important columns are:
+
+- `.fitted`: the model's predicted value;
+- `.resid`: the difference between the actual and predicted value.
+
+These values allow me to examine how well the model predicts individual observations.
+
+
+## Residual Plot
+
+```{r}
+#| label: fig-residual-model1
+#| fig-cap: "Residuals versus fitted values for Model 1."
+
+model_1_aug |>
+  ggplot(
+    aes(
+      x = .fitted,
+      y = .resid
+    )
+  ) +
+  geom_point() +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed"
+  ) +
+  labs(
+    title = "Residual Plot: MPG Predicted by Weight",
+    x = "Fitted Values",
+    y = "Residuals"
+  ) +
+  theme_minimal()
+```
+
+### Response
+
+The residual plot helps evaluate whether the linear regression assumptions are reasonable.
+
+Ideally, the residuals should appear randomly distributed around zero without a strong systematic pattern. A visible curve or other pattern may indicate that the linear model does not fully capture the relationship.
+
+
+## Model 2: Add Horsepower and Cylinders
+
+```{r}
+model_2 <- lm(
+  mpg ~ wt + hp + cyl,
+  data = mtcars
+)
+
+tidy(model_2)
+```
+
+
+## Model 2 Performance
+
+```{r}
+glance(model_2)
+```
+
+
+## Compare R-Squared
+
+```{r}
+model_comparison <- tibble(
+  Model = c(
+    "Model 1: wt",
+    "Model 2: wt + hp + cyl"
+  ),
+  R_squared = c(
+    glance(model_1)$r.squared,
+    glance(model_2)$r.squared
+  ),
+  Adjusted_R_squared = c(
+    glance(model_1)$adj.r.squared,
+    glance(model_2)$adj.r.squared
+  )
+)
+
+model_comparison
+```
+
+### Response
+
+After adding `hp` and `cyl`, I can compare the R-squared values of the two models.
+
+If Model 2 has a higher R-squared, the additional predictors explain more variation in fuel efficiency.
+
+However, adding predictors should not automatically be considered an improvement. Adjusted R-squared is also useful because it accounts for the number of predictors included in the model.
+
+This exercise showed me how `tidy()`, `glance()`, and `augment()` answer different questions:
+
+- `tidy()` examines coefficients;
+- `glance()` summarizes overall model performance;
+- `augment()` provides observation-level predictions and residuals.
+
+
+# Practice 3.2: Marketing Customer Data
+
+## Prompt
+
+> Fit a linear regression model predicting `monthly_spend` using `tenure`, `num_products`, and `region`. Use `tidy()` and `summary()` to examine the coefficients and determine which predictors are statistically significant at the 0.05 level. Use `glance()` to evaluate model fit and create a residual plot. Then add `num_complaints` and `last_login_days` and compare the R-squared values.
+
+## Create Customer Data
+
+```{r}
+set.seed(123)
+
+customer_data <- tibble(
+  customer_id = 1:500,
+
+  tenure = round(
+    runif(
+      500,
+      min = 1,
+      max = 60
+    )
+  ),
+
+  num_products = sample(
+    1:5,
+    500,
+    replace = TRUE
+  ),
+
+  region = factor(
+    sample(
+      c(
+        "West",
+        "South",
+        "Midwest",
+        "Northeast"
+      ),
+      500,
+      replace = TRUE
+    )
+  ),
+
+  num_complaints = rpois(
+    500,
+    lambda = 1
+  ),
+
+  last_login_days = round(
+    runif(
+      500,
+      min = 0,
+      max = 30
+    )
+  )
+) |>
+  mutate(
+    monthly_spend =
+      40 +
+      1.5 * tenure +
+      18 * num_products -
+      7 * num_complaints -
+      0.8 * last_login_days +
+      if_else(
+        region == "West",
+        15,
+        0
+      ) +
+      rnorm(
+        500,
+        mean = 0,
+        sd = 30
+      )
+  )
+
+glimpse(customer_data)
+```
+
+::: {.callout-note title="Note"}
+This section creates a reproducible practice dataset containing the variables required for the marketing regression exercise. If the instructor provides a specific `customer_data` object or dataset, this data-creation chunk should be replaced with the instructor's original data code.
+:::
+
+
+## Model 1: Basic Marketing Model
+
+```{r}
+marketing_model_1 <- lm(
+  monthly_spend ~
+    tenure +
+    num_products +
+    region,
+  data = customer_data
+)
+
+marketing_model_1
+```
+
+
+## Examine Model with `summary()`
+
+```{r}
+summary(marketing_model_1)
+```
+
+
+## Examine Model with `tidy()`
+
+```{r}
+marketing_tidy_1 <- tidy(
+  marketing_model_1
+)
+
+marketing_tidy_1
+```
+
+
+## Statistical Significance
+
+```{r}
+marketing_tidy_1 |>
+  mutate(
+    significant =
+      if_else(
+        p.value < 0.05,
+        "Yes",
+        "No"
+      )
+  )
+```
+
+### Response
+
+A predictor is considered statistically significant at the **0.05 significance level** when its p-value is less than 0.05.
+
+The `summary()` and `tidy()` outputs contain similar coefficient information, but `tidy()` returns the information in a tibble. This makes the results easier to manipulate using tidyverse functions.
+
+The coefficient estimates describe how the expected monthly spending changes when a predictor changes, holding the other variables in the model constant.
+
+
+## Model Performance with `glance()`
+
+```{r}
+marketing_glance_1 <- glance(
+  marketing_model_1
+)
+
+marketing_glance_1
+```
+
+### Response
+
+The R-squared value represents the proportion of variation in `monthly_spend` explained by the predictors in the model.
+
+A higher R-squared indicates that the model explains more of the observed variation in customer spending. However, R-squared alone does not prove that the model will make accurate predictions on new customers.
+
+
+## Residual Plot
+
+```{r}
+#| label: fig-marketing-residual
+#| fig-cap: "Residuals versus fitted values for the basic marketing model."
+
+marketing_aug_1 <- augment(
+  marketing_model_1
+)
+
+marketing_aug_1 |>
+  ggplot(
+    aes(
+      x = .fitted,
+      y = .resid
+    )
+  ) +
+  geom_point() +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed"
+  ) +
+  labs(
+    title = "Residual Plot: Monthly Spending Model",
+    x = "Fitted Monthly Spending",
+    y = "Residuals"
+  ) +
+  theme_minimal()
+```
+
+### Response
+
+The residual plot allows me to visually examine whether the prediction errors appear randomly distributed around zero.
+
+If the residuals show a strong pattern, the linear regression model may be missing an important relationship or may not adequately represent the data.
+
+
+## Model 2: Add Complaints and Last Login Days
+
+```{r}
+marketing_model_2 <- lm(
+  monthly_spend ~
+    tenure +
+    num_products +
+    region +
+    num_complaints +
+    last_login_days,
+  data = customer_data
+)
+
+tidy(marketing_model_2)
+```
+
+
+## Model 2 Performance
+
+```{r}
+glance(marketing_model_2)
+```
+
+
+## Compare Models
+
+```{r}
+marketing_comparison <- tibble(
+  Model = c(
+    "Model 1",
+    "Model 2"
+  ),
+
+  Predictors = c(
+    "tenure + num_products + region",
+    "tenure + num_products + region + num_complaints + last_login_days"
+  ),
+
+  R_squared = c(
+    glance(marketing_model_1)$r.squared,
+    glance(marketing_model_2)$r.squared
+  ),
+
+  Adjusted_R_squared = c(
+    glance(marketing_model_1)$adj.r.squared,
+    glance(marketing_model_2)$adj.r.squared
+  )
+)
+
+marketing_comparison
+```
+
+### Response
+
+Model 2 adds `num_complaints` and `last_login_days` to the original predictors.
+
+If the R-squared and adjusted R-squared increase, the additional variables provide useful information for explaining differences in customer monthly spending.
+
+From a marketing perspective, these variables may be meaningful because customer complaints can indicate dissatisfaction, while the number of days since the customer's last login can represent customer engagement.
+
+This exercise demonstrates that model development is an iterative process. Analysts can begin with a simpler model, evaluate its performance, and then determine whether additional variables meaningfully improve the model.
+
+
+# Practice 3.1 and 3.2 Comparison
+
+::: {.panel-tabset}
+
+## Practice 3.1
+
+Practice 3.1 used the `mtcars` dataset to demonstrate basic linear regression.
+
+The exercise helped me understand:
+
+- fitting a model with `lm()`;
+- interpreting coefficients with `tidy()`;
+- examining model statistics with `glance()`;
+- examining predictions and residuals with `augment()`;
+- comparing models after adding predictors.
+
+## Practice 3.2
+
+Practice 3.2 applied the same ideas to a marketing context.
+
+The exercise helped me understand:
+
+- how customer characteristics can be used as predictors;
+- how to determine statistical significance;
+- how to interpret R-squared;
+- how residual plots help diagnose models;
+- how additional customer variables may improve explanatory power.
+
+:::
+
+
+# Overall Reflection
+
+This module gave me a stronger understanding of the complete machine learning process.
+
+Before this module, I mainly thought about machine learning as choosing a model and fitting it to data. I now understand that the process includes many connected decisions.
+
+First, the analyst must clearly define the outcome and predictor variables. The data must then be prepared appropriately, and the model should be trained without using information from the test data.
+
+Second, model performance needs to be evaluated carefully. Metrics such as accuracy, sensitivity, specificity, and other measures answer different questions. Cross-validation can provide a better estimate of how a model will perform on new observations.
+
+Third, model complexity needs to be controlled. A model that is too simple can underfit, while a model that is too complex can overfit. Understanding bias and variance helps explain this tradeoff.
+
+Finally, applied machine learning extends beyond model development. Tools such as tidymodels help organize the modeling workflow, while frameworks such as vetiver demonstrate how models can eventually be versioned, deployed, and monitored.
+
+::: {.callout-tip title="Final Takeaway"}
+The most important lesson I learned is that a successful machine learning project is not defined only by the algorithm. It also depends on good data preparation, appropriate validation, meaningful evaluation metrics, reproducibility, and clear communication.
+:::
+
+
+# Appendix
+
+## Course Materials
+
+The analysis and reflections in this report are based on the course materials for the Introduction to Machine Learning and Tidymodels module.
+
+### Instructor's Lecture Slides
+
+[W01 Machine Learning Introduction Slides](https://jaejungca.github.io/ml-intro-tidymodels/w01_ml_intro_slides.html#/title-slide)
+
+### Instructor's Hands-On Notebook
+
+[Week 1 Hands-On Notebook](https://jaejungca.github.io/ml-intro-tidymodels/week1_handson.html)
+
+### Instructor's GitHub Repository
+
+[ML Intro Tidymodels Repository](https://github.com/jaejungca/ml-intro-tidymodels)
+
+### Tidymodels
+
+[Tidymodels Packages](https://www.tidymodels.org/packages/)
+
+### Vetiver
+
+[Vetiver Get Started](https://vetiver.posit.co/get-started/)
+
+
+## Published Report
+
+**GitHub Pages:**  
+[Add Published Report URL Here](https://github.com/)
+
+
+## GitHub Repository
+
+**Repository:**  
+[Add GitHub Repository URL Here](https://github.com/)
+
+
+## Reproducibility Information
+
+```{r}
+sessionInfo()
+```
